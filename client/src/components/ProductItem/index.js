@@ -3,28 +3,23 @@ import { Link } from "react-router-dom";
 import { pluralize } from "../../utils/helpers";
 import { useStoreContext } from "../../utils/GlobalState";
 import { ADD_TO_CART, UPDATE_CART_QUANTITY } from "../../utils/actions";
-import CartItem from "../CartItem";
 import { idbPromise } from "../../utils/helpers";
 
 function ProductItem(item) {
-  const { image, name, _id, price, quantity } = item;
-
   const [state, dispatch] = useStoreContext();
+
+  const { image, name, _id, price, quantity } = item;
 
   const { cart } = state;
 
   const addToCart = () => {
-    // find the cart item with the matching id
-    const itemInCart = cart.find((CartItem) => CartItem._id === _id);
-
-    // if there was a match, call UPDATE with a new purchase quantity
+    const itemInCart = cart.find((cartItem) => cartItem._id === _id);
     if (itemInCart) {
       dispatch({
         type: UPDATE_CART_QUANTITY,
         _id: _id,
         purchaseQuantity: parseInt(itemInCart.purchaseQuantity) + 1,
       });
-
       idbPromise("cart", "put", {
         ...itemInCart,
         purchaseQuantity: parseInt(itemInCart.purchaseQuantity) + 1,
